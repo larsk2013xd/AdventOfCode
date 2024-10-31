@@ -6,3 +6,10 @@ def run(function : callable, **kwargs):
     t1 = time.perf_counter()
     print(f"Completed in {t1 - t0 : .2f} seconds.")
     print(f"Answer: \n{result}")
+    return result
+
+def test(function : callable, expectedResult, **kwargs):
+    result = run(function, **kwargs)
+    assert result == expectedResult, "Test failed..."
+    print("Test succeeded.")
+
