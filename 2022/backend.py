@@ -15,13 +15,16 @@ def test(function : callable, input, expectedResult):
     assert result == expectedResult, "Test failed..."
     print("Test succeeded.")
 
-def parseInts(texts : str) -> tuple[int]:
-    return tuple(map(int, re.findall(r"\d+", texts)))
+def parseInts(text : str) -> tuple[int]:
+    return tuple(map(int, re.findall(r"\d+", text)))
+
+def parseLetters(text : str) -> tuple[str]:
+    return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 
 def paragraphs(text : str) : return(text.split("\n\n"))
 lines = str.splitlines
 
-def parseInput(input : str, parseMethod = parseInts, sections = paragraphs):
+def parseInput(input : str, parseMethod = parseInts, sections = lines):
     print(f"{10*"_"} Input to be parsed {10*"_"}")
     for line in input.splitlines()[:5] : print(line)
     print("... and maybe more")
