@@ -16,6 +16,14 @@ def test(function : callable, input, expectedResult):
 
 def parseInput(input : str | io.TextIOWrapper, parseFunction = str.splitlines, **kwargs):
     if type(input) == io.TextIOWrapper : input = input.read()
+    print(f"{10*"-"} Input -> {len(input.splitlines())} lines {10*"-"}")
+    for string in input.splitlines()[:10] : print(string)
+    print("And maybe more...")
+    print(20*"-")
     inputElements = input if not parseFunction else parseFunction(input, **kwargs)
+    print(f"{10*"-"} Parsed -> {len(inputElements)} sections {10*"-"}")
+    for inputElement in inputElements[:5] : print([inputElement])
+    print("And maybe more...")
+    print(20*"-")
     return inputElements
 
