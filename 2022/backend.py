@@ -29,7 +29,7 @@ def parseInput(input : str, parseMethod = parseInts, sections = paragraphs):
     inputSections = sections(input)
     parsedInputs = list(map(parseMethod, inputSections))
     print(f"{10*"_"} Parsed input {10*"_"}")
-    for parsedInput in parsedInputs[:5] : print(f"{parsedInput}\n")
+    for parsedInput in parsedInputs[:5] : print(f"{parsedInput}")
     print("... and maybe more")
     print(20*"_")
     return parsedInputs
