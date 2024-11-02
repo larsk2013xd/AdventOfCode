@@ -1,6 +1,7 @@
 import time
 import os
 import io
+import re
 def run(function : callable, input):
     """Runs a function based on some inputs to get some nicely formatted answers. The function is expected to have as first argument an input file"""
     t0 = time.perf_counter()
@@ -14,16 +15,21 @@ def test(function : callable, input, expectedResult):
     assert result == expectedResult, "Test failed..."
     print("Test succeeded.")
 
-def parseInput(input : str | io.TextIOWrapper, parseFunction = str.splitlines, **kwargs):
-    if type(input) == io.TextIOWrapper : input = input.read()
-    print(f"{10*"-"} Input -> {len(input.splitlines())} lines {10*"-"}")
-    for string in input.splitlines()[:10] : print(string)
-    print("And maybe more...")
-    print(20*"-")
-    inputElements = input if not parseFunction else parseFunction(input, **kwargs)
-    print(f"{10*"-"} Parsed -> {len(inputElements)} sections {10*"-"}")
-    for inputElement in inputElements[:5] : print([inputElement])
-    print("And maybe more...")
-    print(20*"-")
-    return inputElements
+def parseInts(texts : str) -> tuple[int]:
+    return tuple(map(int, re.findall(r"\d+", texts)))
 
+def paragraphs(text : str) : return(text.split("\n\n"))
+lines = str.splitlines
+
+def parseInput(input : str, parseMethod = parseInts, sections = paragraphs):
+    print(f"{10*"_"} Input to be parsed {10*"_"}")
+    for line in input.splitlines()[:5] : print(line)
+    print("... and maybe more")
+    print(20*"_")
+    inputSections = sections(input)
+    parsedInputs = list(map(parseMethod, inputSections))
+    print(f"{10*"_"} Parsed input {10*"_"}")
+    for parsedInput in parsedInputs[:5] : print(f"{parsedInput}\n")
+    print("... and maybe more")
+    print(20*"_")
+    return parsedInputs
