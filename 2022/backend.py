@@ -14,15 +14,8 @@ def test(function : callable, input, expectedResult):
     assert result == expectedResult, "Test failed..."
     print("Test succeeded.")
 
-def parseInput(input : str | io.TextIOWrapper, parseFunction = str.splitlines, printAll = False, **kwargs):
-    ## Manage input if its a file
+def parseInput(input : str | io.TextIOWrapper, parseFunction = str.splitlines, **kwargs):
     if type(input) == io.TextIOWrapper : input = input.read()
-    print("Puzzle input :")
-    print(input)
-    print('---------------')
-    print("Parsed input: ")
     inputElements = input if not parseFunction else parseFunction(input, **kwargs)
-    print(inputElements)
-    if not printAll : print(".\n"*4)
     return inputElements
 
