@@ -3,9 +3,18 @@ import os
 import io
 import re
 
+
 ## Section splitting
 def paragraphs(text : str) : return(text.split("\n\n"))
 def kRows(K : int) : "Creates sections of K rows."; return lambda W : list(W.splitlines()[k*K:(k+1)*K] for k in range(len(W.splitlines())//K))
+def columns(text : str) :
+    """Splits the text into rows and returns the columns, assuming there are spaces between each column"""
+    rows = text.splitlines()
+    columns = ["" for _ in range((max(map(len, rows))))] # placeholder
+    for i in range(len(rows)):
+        for j in range(len(rows[i])):
+            columns[j] += rows[i][j]
+    return columns
 lines = str.splitlines
 
 ## Parsing
@@ -27,15 +36,16 @@ def test(function : callable, input, expectedResult):
 
 
 
-def parseInput(input : str, parseMethod = None, sections = lines):
-    print(f"{10*"_"} Input to be parsed {10*"_"}")
+def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = False, surpress = False):
+    if not surpress : print(f"{10*"_"} Input to be parsed {10*"_"}")
     for line in input.splitlines()[:5] : print(line)
-    print("... and maybe more")
-    print(20*"_")
+    if not surpress : print("... and maybe more")
+    if not surpress : print(20*"_")
     inputSections = sections(input)
     parsedInputs = list(map(parseMethod, inputSections)) if parseMethod else inputSections
-    print(f"{10*"_"} Parsed input {10*"_"}")
+    if ignoreEmpty : parsedInputs = [parsedInput for parsedInput in parsedInputs if len(parsedInput) >= 1]
+    if not surpress : print(f"{10*"_"} Parsed input {10*"_"}")
     for parsedInput in parsedInputs[:5] : print(f"{parsedInput}")
-    print("... and maybe more")
-    print(20*"_")
+    if not surpress : print("... and maybe more")
+    if not surpress : print(20*"_")
     return parsedInputs
