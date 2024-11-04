@@ -48,4 +48,5 @@ def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = 
     for parsedInput in parsedInputs[:5] : print(f"{parsedInput}")
     if not surpress : print("... and maybe more")
     if not surpress : print(20*"_")
+    if len(parsedInputs) == 1 : parsedInputs = parsedInputs[0]
     return parsedInputs
