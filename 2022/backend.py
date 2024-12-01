@@ -19,6 +19,7 @@ lines = str.splitlines
 
 ## Parsing
 def parseInts(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d+", text)))
+def parseDigits(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d", text)))
 def parseLetters(text : str) -> tuple[str]: return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 def parseWords(text : str) -> tuple[str] : return tuple(map(str, re.findall(r"[^ ]+", text)))
 

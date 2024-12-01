@@ -24,17 +24,20 @@ def parseInts(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d+"
 def parseLetters(text : str) -> tuple[str]: return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 def parseWords(text : str) -> tuple[str] : return tuple(map(str, re.findall(r"[^ ]+", text)))
 
-def run(function : callable, input, day : int):
+def run(function : callable, input, day : int, part : int):
     """Runs a function based on some inputs to get some nicely formatted answers. The function is expected to have as first argument an input file"""
     t0 = time.perf_counter()
     result = function(input)
     t1 = time.perf_counter()
-    print(f"Answer for day {day}: {result}           {(t1-t0) : .6f} seconds")
-    run_results.update({f"Day {day}" : {"result" : result, "time" : (t1-t0)}})
+    if day != None:
+        print(f"Answer for day {day} part {part}: {result}           {(t1-t0) : .6f} seconds")
+        run_results.update({f"Day {day} part {part}" : {"result" : result, "time" : (t1-t0)}})
+    else:
+        print(f"Answer: {result}           {(t1-t0) : .6f} seconds")
     return result
 
 def test(function : callable, input, expectedResult):
-    result = run(function, input)
+    result = run(function, input, day = None, part = None)
     assert result == expectedResult, f"Test failed. Expected {expectedResult}, but got {result} instead."
     print("Test succeeded.")
 
