@@ -2,9 +2,9 @@ import time
 import os
 import io
 import re
+import pandas as pd
 
-
-run_results = dict()
+run_results = list()
 
 ## Section splitting
 def paragraphs(text : str) : return(text.split("\n\n"))
@@ -31,7 +31,7 @@ def run(function : callable, input, day : int, part : int):
     t1 = time.perf_counter()
     if day != None:
         print(f"Answer for day {day} part {part}: {result}           {(t1-t0) : .6f} seconds")
-        run_results.update({f"Day {day} part {part}" : {"result" : result, "time" : (t1-t0)}})
+        run_results.append({"Day" : day, "Part" : part, "Result" : result, "Time" : (t1-t0)})
     else:
         print(f"Answer: {result}           {(t1-t0) : .6f} seconds")
     return result
@@ -56,3 +56,6 @@ def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = 
     if not surpress : print(20*"_")
     if len(parsedInputs) == 1 : parsedInputs = parsedInputs[0]
     return parsedInputs
+
+def neat_results():
+    return pd.DataFrame(run_results)
