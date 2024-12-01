@@ -4,6 +4,8 @@ import io
 import re
 
 
+run_results = dict()
+
 ## Section splitting
 def paragraphs(text : str) : return(text.split("\n\n"))
 def kRows(K : int) : "Creates sections of K rows."; return lambda W : list(W.splitlines()[k*K:(k+1)*K] for k in range(len(W.splitlines())//K))
@@ -22,19 +24,19 @@ def parseInts(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d+"
 def parseLetters(text : str) -> tuple[str]: return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 def parseWords(text : str) -> tuple[str] : return tuple(map(str, re.findall(r"[^ ]+", text)))
 
-def run(function : callable, input):
+def run(function : callable, input, day : int):
     """Runs a function based on some inputs to get some nicely formatted answers. The function is expected to have as first argument an input file"""
     t0 = time.perf_counter()
     result = function(input)
     t1 = time.perf_counter()
-    print(f"Answer: {result}           {(t1-t0) : .6f} seconds")
+    print(f"Answer for day {day}: {result}           {(t1-t0) : .6f} seconds")
+    run_results.update({f"Day {day}" : {"result" : result, "time" : (t1-t0)}})
     return result
 
 def test(function : callable, input, expectedResult):
     result = run(function, input)
     assert result == expectedResult, f"Test failed. Expected {expectedResult}, but got {result} instead."
     print("Test succeeded.")
-
 
 
 def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = False, surpress = False):
