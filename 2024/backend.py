@@ -4,6 +4,7 @@ import io
 import re
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches
 import numpy as np
 
 days = list()
@@ -26,20 +27,23 @@ def parseInts(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d+"
 def parseLetters(text : str) -> tuple[str]: return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 def parseWords(text : str) -> tuple[str] : return tuple(map(str, re.findall(r"[^ ]+", text)))
 
-def run(function : callable, input, day : int, part : int):
+def run(function : callable, input, day : int, part : int, n_runs = 100):
     """Runs a function based on some inputs to get some nicely formatted answers. The function is expected to have as first argument an input file"""
-    t0 = time.perf_counter()
-    result = function(input)
-    t1 = time.perf_counter()
+    run_times = []
+    for _ in range(n_runs):
+        t0 = time.perf_counter()
+        result = function(input)
+        t1 = time.perf_counter()
+        run_times.append(t1-t0)
     if day != None:
-        print(f"Answer for day {day} part {part}: {result}           {(t1-t0) : .6f} seconds")
-        run_results.append({"Day" : day, "Part" : part, "Result" : result, "Time" : (t1-t0)})
+        print(f"Answer for day {day} part {part}: {result}  Average time {sum(run_times)/len(run_times) : .6f} seconds")
+        run_results.append({"Day" : day, "Part" : part, "Result" : result, "Time" : sum(run_times)/len(run_times)})
     else:
-        print(f"Answer: {result}           {(t1-t0) : .6f} seconds")
+        print(f"Answer: {result}           {sum(run_times)/len(run_times) : .6f} seconds")
     return result
 
 def test(function : callable, input, expectedResult):
-    result = run(function, input, day = None, part = None)
+    result = run(function, input, day = None, part = None, n_runs = 1)
     assert result == expectedResult, f"Test failed. Expected {expectedResult}, but got {result} instead."
     print("Test succeeded.")
 
@@ -71,10 +75,13 @@ def plot_results():
     fig, axs = plt.subplots(figsize = (6,6))
     days = np.arange(len(run_results) // 2)
     day_strings = [f"Day {day+1}" for day in days]
+    patches = [matplotlib.patches.Patch(facecolor = "blue", label = "Part 1"),
+               matplotlib.patches.Patch(facecolor = "orange", label = "Part 2")]
     for problem in run_results:
         day, part, result, time = problem.values()
         color = "blue" if part == 1 else "orange"
         bar = axs.bar(2*day + 0.5*part, height = time, width = 0.3, color = color)
         axs.bar_label(bar, padding = 3, fmt = "{:.2}")
     axs.set_xticks(2*(days+1) + 0.75, day_strings)
+    axs.legend(handles = patches)
     axs.set_ylabel("Run time (seconds)")
