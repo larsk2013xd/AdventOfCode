@@ -59,8 +59,13 @@ def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = 
     if len(parsedInputs) == 1 : parsedInputs = parsedInputs[0]
     return parsedInputs
 
-def neat_results():
+def overall_results():
     return pd.DataFrame(run_results)
+
+def complexity_increase_per_day():
+    df = pd.DataFrame(run_results)
+    grouped_df = df.groupby("Day").apply(lambda x : x.max()/x.min())
+    return(grouped_df["Time"].transpose())
 
 def plot_results():
     fig, axs = plt.subplots(figsize = (6,6))
