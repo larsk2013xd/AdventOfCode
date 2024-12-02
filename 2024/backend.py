@@ -3,8 +3,10 @@ import os
 import io
 import re
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
-run_results = list()
+days = list()
 
 ## Section splitting
 def paragraphs(text : str) : return(text.split("\n\n"))
@@ -59,3 +61,15 @@ def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = 
 
 def neat_results():
     return pd.DataFrame(run_results)
+
+def plot_results():
+    fig, axs = plt.subplots(figsize = (6,6))
+    days = np.arange(len(run_results) // 2)
+    day_strings = [f"Day {day+1}" for day in days]
+    for problem in run_results:
+        day, part, result, time = problem.values()
+        color = "blue" if part == 1 else "orange"
+        bar = axs.bar(2*day + 0.5*part, height = time, width = 0.3, color = color)
+        axs.bar_label(bar, padding = 3, fmt = "{:.2}")
+    axs.set_xticks(2*(days+1) + 0.75, day_strings)
+    axs.set_ylabel("Run time (seconds)")
