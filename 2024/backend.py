@@ -66,6 +66,9 @@ def parseInput(input : str, parseMethod = None, sections = lines, ignoreEmpty = 
 def overall_results():
     return pd.DataFrame(run_results)
 
+def total_avg_runtime():
+    return f"The total runtime is on average {pd.DataFrame(run_results)['Time'].sum() : .2f} seconds"
+
 def complexity_increase_per_day():
     df = pd.DataFrame(run_results)
     grouped_df = df.groupby("Day").apply(lambda x : x.max()/x.min())
