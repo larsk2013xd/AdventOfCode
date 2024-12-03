@@ -21,6 +21,7 @@ def columns(text : str) :
             columns[j] += rows[i][j]
     return columns
 lines = str.splitlines
+def ignoreLineBreaks(text : str) : return(text.replace("\n",""))
 
 ## Parsing
 def parseInts(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d+", text)))
