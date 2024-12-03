@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches
 import numpy as np
 
-days = list()
+run_results = list()
 
 ## Section splitting
 def paragraphs(text : str) : return(text.split("\n\n"))
@@ -28,7 +28,7 @@ def parseInts(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d+"
 def parseLetters(text : str) -> tuple[str]: return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 def parseWords(text : str) -> tuple[str] : return tuple(map(str, re.findall(r"[^ ]+", text)))
 
-def run(function : callable, input, day : int, part : int, n_runs = 100):
+def run(function : callable, input, day : int, part : int, n_runs = 100, incorrect = False):
     """Runs a function based on some inputs to get some nicely formatted answers. The function is expected to have as first argument an input file"""
     run_times = []
     for _ in range(n_runs):
@@ -38,7 +38,10 @@ def run(function : callable, input, day : int, part : int, n_runs = 100):
         run_times.append(t1-t0)
     if day != None:
         print(f"Answer for day {day} part {part}: {result}  Average time {sum(run_times)/len(run_times) : .6f} seconds")
-        run_results.append({"Day" : day, "Part" : part, "Result" : result, "Time" : sum(run_times)/len(run_times)})
+        if incorrect:
+            run_results.append({"Day" : day, "Part" : part, "Result" : "Incorrect", "Time" : None})
+        else:
+            run_results.append({"Day" : day, "Part" : part, "Result" : result, "Time" : sum(run_times)/len(run_times)})
     else:
         print(f"Answer: {result}           {sum(run_times)/len(run_times) : .6f} seconds")
     return result
@@ -72,10 +75,13 @@ def total_avg_runtime():
 
 def complexity_increase_per_day():
     df = pd.DataFrame(run_results)
-    grouped_df = df.groupby("Day").apply(lambda x : x.max()/x.min())
+    grouped_df = df[df["Result"] != 'Incorrect'].groupby("Day").apply(lambda x : x.max()/x.min())
     return(grouped_df["Time"].transpose())
 
 def plot_results():
+    day_gap = 1.3
+    part_gap = 0.4
+    bar_width = 0.95*part_gap
     fig, axs = plt.subplots(figsize = (6,6))
     days = np.arange(len(run_results) // 2)
     day_strings = [f"Day {day+1}" for day in days]
@@ -84,8 +90,9 @@ def plot_results():
     for problem in run_results:
         day, part, result, time = problem.values()
         color = "blue" if part == 1 else "orange"
-        bar = axs.bar(2*day + 0.5*part, height = time, width = 0.3, color = color)
+        if result == "Incorrect" : continue
+        bar = axs.bar(day_gap*(day) + part_gap*(part-1), height = time, width = bar_width, color = color)
         axs.bar_label(bar, padding = 3, fmt = "{:.2}")
-    axs.set_xticks(2*(days+1) + 0.75, day_strings)
+    axs.set_xticks(day_gap*(days+1) + 0.5*bar_width, day_strings)
     axs.legend(handles = patches)
     axs.set_ylabel("Run time (seconds)")
