@@ -96,5 +96,6 @@ def plot_results():
         bar = axs.bar(day_gap*(day) + part_gap*(part-1), height = time, width = bar_width, color = color)
         axs.bar_label(bar, padding = 3, fmt = "{:.2}")
     axs.set_xticks(day_gap*(days+1) + 0.5*bar_width, day_strings)
+    axs.set_ylim(0, 1)
     axs.legend(handles = patches)
     axs.set_ylabel("Run time (seconds)")
