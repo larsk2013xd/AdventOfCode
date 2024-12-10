@@ -37,6 +37,7 @@ def run(function : callable, input, day : int, part : int, n_runs = 40, incorrec
         result = function(input)
         t1 = time.perf_counter()
         run_times.append(t1-t0)
+        if sum(run_times) >= 5 : break
     if day != None:
         print(f"Answer for day {day} part {part}: {result}  Average time {sum(run_times)/len(run_times) : .6f} seconds")
         if incorrect:
