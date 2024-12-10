@@ -29,17 +29,16 @@ def parseDigits(text : str) -> tuple[int]: return tuple(map(int, re.findall(r"\d
 def parseLetters(text : str) -> tuple[str]: return tuple(map(str, re.findall(r"[a-zA-Z]", text)))
 def parseWords(text : str) -> tuple[str] : return tuple(map(str, re.findall(r"[^ ]+", text)))
 
-def run(function : callable, input, day : int, part : int, n_runs = 40, incorrect = False):
+def run(function : callable, input, day : int, part : int, incorrect = False):
     """Runs a function based on some inputs to get some nicely formatted answers. The function is expected to have as first argument an input file"""
     run_times = []
-    for _ in range(n_runs):
+    while len(run_times) <= 50 and sum(run_times) <= 1:
         t0 = time.perf_counter()
         result = function(input)
         t1 = time.perf_counter()
         run_times.append(t1-t0)
-        if sum(run_times) >= 5 : break
     if day != None:
-        print(f"Answer for day {day} part {part}: {result}  Average time {sum(run_times)/len(run_times) : .6f} seconds")
+        print(f"Answer for day {day} part {part}: {result}  Average time {sum(run_times)/len(run_times) : .6f} seconds [{len(run_times)} runs]")
         if incorrect:
             run_results.append({"Day" : day, "Part" : part, "Result" : "Incorrect", "Time" : None})
         else:
@@ -49,7 +48,7 @@ def run(function : callable, input, day : int, part : int, n_runs = 40, incorrec
     return result
 
 def test(function : callable, input, expectedResult):
-    result = run(function, input, day = None, part = None, n_runs = 1)
+    result = run(function, input, day = None, part = None)
     assert result == expectedResult, f"Test failed. Expected {expectedResult}, but got {result} instead."
     print("Test succeeded.")
 
@@ -86,7 +85,7 @@ def plot_results():
     day_gap = 1.3
     part_gap = 0.4
     bar_width = 0.95*part_gap
-    fig, axs = plt.subplots(figsize = (6,6))
+    fig, axs = plt.subplots(figsize = (16,6))
     days = np.arange(len(run_results) // 2)
     day_strings = [f"Day {day+1}" for day in days]
     patches = [matplotlib.patches.Patch(facecolor = "blue", label = "Part 1"),
@@ -95,9 +94,9 @@ def plot_results():
         day, part, result, time = problem.values()
         color = "blue" if part == 1 else "orange"
         if result == "Incorrect" : continue
-        bar = axs.bar(day_gap*(day) + part_gap*(part-1), height = time, width = bar_width, color = color)
-        axs.bar_label(bar, padding = 3, fmt = "{:.2}")
-    axs.set_xticks(day_gap*(days+1) + 0.5*bar_width, day_strings)
-    axs.set_ylim(0, 1)
+        bar = axs.bar(day_gap*(day) + part_gap*(part-1), height = 1000*time, width = bar_width, color = color)
+        axs.bar_label(bar, padding = 3, fmt = "{:.4}", rotation = 90)
+    axs.set_xticks(day_gap*(days+1) + 0.5*bar_width, day_strings, rotation = 65)
     axs.legend(handles = patches)
-    axs.set_ylabel("Run time (seconds)")
+    axs.set_ylim(0,500)
+    axs.set_ylabel("Run time (ms)")
